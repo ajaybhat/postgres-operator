@@ -56,9 +56,8 @@ linux: ${SOURCES}
 macos: ${SOURCES}
 	GOOS=darwin GOARCH=amd64 CGO_ENABLED=${CGO_ENABLED} go build -o build/macos/${BINARY} ${BUILD_FLAGS} -ldflags "$(LDFLAGS)" $^
 
-docker-context: scm-source.json linux
+docker-context:
 	mkdir -p docker/build/
-	cp build/linux/${BINARY} scm-source.json docker/build/
 
 docker: ${DOCKERDIR}/${DOCKERFILE} docker-context
 	echo `(env)`

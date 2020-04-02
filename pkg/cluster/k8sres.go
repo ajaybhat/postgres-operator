@@ -410,18 +410,21 @@ func isBootstrapOnlyParameter(param string) bool {
 		param == "track_commit_timestamp"
 }
 
-func generateVolumeMounts(volume acidv1.Volume) []v1.VolumeMount {
+func generateVolumeMounts() []v1.VolumeMount {
 	return []v1.VolumeMount{
 		{
 			Name:      constants.DataVolumeName,
 			MountPath: constants.PostgresDataMount, //TODO: fetch from manifest
-			SubPath:   volume.SubPath,
 		},
+		{
+			Name:      constants.WaleVolumeName,
+			MountPath: constants.WaleMount, //TODO: fetch from manifest
+		}
 	}
 }
 
 func generateContainer(
-	name string,
+	name mstring,
 	dockerImage *string,
 	resourceRequirements *v1.ResourceRequirements,
 	envVars []v1.EnvVar,
