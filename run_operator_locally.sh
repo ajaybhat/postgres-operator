@@ -98,7 +98,8 @@ function build_operator_binary(){
 
     # redirecting stderr greatly reduces non-informative output during normal builds
     echo "Build operator binary (stderr redirected to /dev/null)..."
-    make clean deps local test > /dev/null 2>&1
+    make clean deps local > /dev/null 2>&1
+
 
 }
 
