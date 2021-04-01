@@ -522,6 +522,27 @@ func (mock *MockEndpointsGetter) Endpoints(namespace string) corev1.EndpointsInt
 }
 
 
+func (mock *mockEndpoint) Create(ctx context.Context, cronJob *v1.Endpoints, opts metav1.CreateOptions) (*v1.Endpoints, error){
+	return &v1.Endpoints{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test-cronjob",
+		},
+	}, nil
+}
+
+func (mock *mockEndpoint) Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error {
+	return nil
+}
+
+func (mock *mockEndpoint) Get(ctx context.Context, name string, opts metav1.GetOptions) (*v1.Endpoints, error) {
+	return &v1.Endpoints{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test-cronjob",
+		},
+	}, nil
+}
+
+
 
 // NewMockKubernetesClient for other tests
 func NewMockKubernetesClient() KubernetesClient {
