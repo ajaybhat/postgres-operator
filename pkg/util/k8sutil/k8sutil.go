@@ -105,6 +105,20 @@ type mockConfigMap struct {
 type MockConfigMapsGetter struct {
 }
 
+type mockCronJob struct {
+	clientbatchv1beta1.CronJobInterface
+}
+
+type MockCronJobsGetter struct {
+}
+
+type mockEndpoint struct {
+	corev1.EndpointsInterface
+}
+
+type MockEndpointsGetter struct {
+}
+
 // RestConfig creates REST config
 func RestConfig(kubeConfig string, outOfCluster bool) (*rest.Config, error) {
 	if outOfCluster {
@@ -478,6 +492,37 @@ func (mock *mockServiceNotExist) Get(ctx context.Context, name string, opts meta
 	}
 }
 
+
+func (mock *MockCronJobsGetter) CronJobs(namespace string) clientbatchv1beta1.CronJobInterface {
+	return &mockCronJob{}
+}
+
+func (mock *mockCronJob) Create(ctx context.Context, cronJob *batchv1beta1.CronJob, opts metav1.CreateOptions) (*batchv1beta1.CronJob, error){
+return &batchv1beta1.CronJob{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test-cronjob",
+		},
+	}, nil
+}
+
+func (mock *mockCronJob) Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error {
+	return nil
+}
+
+func (mock *mockCronJob) Get(ctx context.Context, name string, opts metav1.GetOptions) (*batchv1beta1.CronJob, error) {
+	return &batchv1beta1.CronJob{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test-cronjob",
+		},
+	}, nil
+}
+
+func (mock *MockEndpointsGetter) Endpoints(namespace string) corev1.EndpointsInterface {
+	return &mockEndpoint{}
+}
+
+
+
 // NewMockKubernetesClient for other tests
 func NewMockKubernetesClient() KubernetesClient {
 	return KubernetesClient{
@@ -485,6 +530,9 @@ func NewMockKubernetesClient() KubernetesClient {
 		ConfigMapsGetter:  &MockConfigMapsGetter{},
 		DeploymentsGetter: &MockDeploymentGetter{},
 		ServicesGetter:    &MockServiceGetter{},
+		CronJobsGetter:    &MockCronJobsGetter{},
+		EndpointsGetter:   &MockEndpointsGetter{},
+
 	}
 }
 
