@@ -22,7 +22,7 @@ func TestSyncLogicalBackupJob(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+		}, k8sutil.NewMockKubernetesClient(), acidv1.Postgresql{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "acid-fake-cluster",
 				Namespace: "test-namespace",
@@ -37,9 +37,6 @@ func TestSyncLogicalBackupJob(t *testing.T) {
 	cluster.systemUsers = map[string]spec.PgUser{
 		"superuser": spec.PgUser{Origin: spec.RoleOriginInfrastructure},
 	}
-
-	clusterMissingObjects := *cluster
-	clusterMissingObjects.KubeClient = k8sutil.NewMockKubernetesClient()
 
 	clusterMock := *cluster
 	err := clusterMock.syncLogicalBackupJob()
@@ -57,7 +54,7 @@ func TestSyncSecrets(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+		}, k8sutil.NewMockKubernetesClient(), acidv1.Postgresql{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "acid-fake-cluster",
 				Namespace: "test-namespace",
@@ -72,9 +69,6 @@ func TestSyncSecrets(t *testing.T) {
 	cluster.systemUsers = map[string]spec.PgUser{
 		"superuser": spec.PgUser{Origin: spec.RoleOriginInfrastructure},
 	}
-
-	clusterMissingObjects := *cluster
-	clusterMissingObjects.KubeClient = k8sutil.NewMockKubernetesClient()
 
 	clusterMock := *cluster
 	err := clusterMock.syncSecrets()
@@ -93,7 +87,7 @@ func TestSyncServices(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+		}, k8sutil.NewMockKubernetesClient(), acidv1.Postgresql{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      "acid-fake-cluster",
 				Namespace: "test-namespace",
@@ -108,10 +102,7 @@ func TestSyncServices(t *testing.T) {
 	cluster.systemUsers = map[string]spec.PgUser{
 		"superuser": spec.PgUser{Origin: spec.RoleOriginInfrastructure},
 	}
-
-	clusterMissingObjects := *cluster
-	clusterMissingObjects.KubeClient = k8sutil.NewMockKubernetesClient()
-
+	
 	clusterMock := *cluster
 	err := clusterMock.syncServices()
 	if err != nil {
