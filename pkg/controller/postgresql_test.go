@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"k8s.io/client-go/tools/cache"
 	"reflect"
 	"testing"
 	"time"
@@ -23,6 +24,33 @@ func newPostgresqlTestController() *Controller {
 
 var postgresqlTestController = newPostgresqlTestController()
 
+func TestQueueEvents(t *testing.T) {
+
+	postgresqlTestController.clusterWorkers = map[spec.NamespacedName]uint32{
+		spec.NamespacedName{
+			Namespace: "test-namespace",
+			Name:      "acid-test-cluster",
+		}: 0,
+	}
+	cache = []cache.FIFO
+	postgresqlTestController.clusterEventQueues = make(&cache, 1)
+
+	list := acidv1.PostgresqlList{
+		TypeMeta: metav1.TypeMeta{},
+		ListMeta: metav1.ListMeta{},
+		Items: []acidv1.Postgresql{
+			acidv1.Postgresql{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:        "acid-test-cluster",
+					Namespace:   "test-namespace",
+					ClusterName: "acid-test-cluster",
+				},
+				Spec: acidv1.PostgresSpec{},
+			},
+		},
+	}
+	postgresqlTestController.queueEvents(&list, EventSync)
+}
 func TestControllerOwnershipOnPostgresql(t *testing.T) {
 	tests := []struct {
 		name  string

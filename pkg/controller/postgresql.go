@@ -470,6 +470,7 @@ func (c *Controller) queueClusterEvent(informerOldSpec, informerNewSpec *acidv1.
 	}
 
 	lg := c.logger.WithField("worker", workerID).WithField("cluster-name", clusterName)
+	lg.Infof("%v event", c.clusterEventQueues)
 	if err := c.clusterEventQueues[workerID].Add(clusterEvent); err != nil {
 		lg.Errorf("error while queueing cluster event: %v", clusterEvent)
 	}

@@ -120,7 +120,7 @@ func TestSyncServices(t *testing.T) {
 	}
 }
 
-func testSyncDatabases(t *testing.T) {
+func TestSyncDatabases(t *testing.T) {
 	var cluster = New(
 		Config{
 			OpConfig: config.Config{
@@ -130,7 +130,7 @@ func testSyncDatabases(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+		}, k8sutil.NewMockKubernetesClient(), acidv1.Postgresql{
 			Spec: acidv1.PostgresSpec{
 				Databases: map[string]string{
 					"foo_db": "zalando",
@@ -161,9 +161,6 @@ func testSyncDatabases(t *testing.T) {
 		},
 	}
 
-	clusterMissingObjects := *cluster
-	clusterMissingObjects.KubeClient = k8sutil.NewMockKubernetesClient()
-
 	clusterMock := *cluster
 	err := clusterMock.syncDatabases()
 	if err != nil {
@@ -171,7 +168,7 @@ func testSyncDatabases(t *testing.T) {
 	}
 }
 
-func testSyncPreparedDatabases(t *testing.T) {
+func TestSyncPreparedDatabases(t *testing.T) {
 	var cluster = New(
 		Config{
 			OpConfig: config.Config{
@@ -181,7 +178,7 @@ func testSyncPreparedDatabases(t *testing.T) {
 					ReplicationUsername: replicationUserName,
 				},
 			},
-		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+		}, k8sutil.NewMockKubernetesClient(), acidv1.Postgresql{
 			Spec: acidv1.PostgresSpec{
 				PreparedDatabases: map[string]acidv1.PreparedDatabase{
 					"foo": {
@@ -205,9 +202,6 @@ func testSyncPreparedDatabases(t *testing.T) {
 			Name: "test-sts",
 		},
 	}
-
-	clusterMissingObjects := *cluster
-	clusterMissingObjects.KubeClient = k8sutil.ClientMissingObjects()
 
 	clusterMock := *cluster
 	err := clusterMock.syncPreparedDatabases()
