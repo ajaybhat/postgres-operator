@@ -12,7 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func TestSyncLogicalBackupJob(t *testing.T){
+func TestSyncLogicalBackupJob(t *testing.T) {
 	var cluster = New(
 		Config{
 			OpConfig: config.Config{
@@ -21,9 +21,12 @@ func TestSyncLogicalBackupJob(t *testing.T){
 					SuperUsername:       superUserName,
 					ReplicationUsername: replicationUserName,
 				},
-
 			},
 		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "acid-fake-cluster",
+				Namespace: "test-namespace",
+			},
 		}, logger, eventRecorder)
 
 	cluster.Statefulset = &appsv1.StatefulSet{
@@ -40,11 +43,11 @@ func TestSyncLogicalBackupJob(t *testing.T){
 
 	clusterMock := *cluster
 	err := clusterMock.syncLogicalBackupJob()
-	if  err != nil {
+	if err != nil {
 		t.Errorf("Sync PreparedDBs test: Could not synchronize, %+v", err)
 	}
 }
-func TestSyncSecrets(t *testing.T){
+func TestSyncSecrets(t *testing.T) {
 	var cluster = New(
 		Config{
 			OpConfig: config.Config{
@@ -53,9 +56,12 @@ func TestSyncSecrets(t *testing.T){
 					SuperUsername:       superUserName,
 					ReplicationUsername: replicationUserName,
 				},
-
 			},
 		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "acid-fake-cluster",
+				Namespace: "test-namespace",
+			},
 		}, logger, eventRecorder)
 
 	cluster.Statefulset = &appsv1.StatefulSet{
@@ -72,12 +78,12 @@ func TestSyncSecrets(t *testing.T){
 
 	clusterMock := *cluster
 	err := clusterMock.syncSecrets()
-	if  err != nil {
+	if err != nil {
 		t.Errorf("Sync PreparedDBs test: Could not synchronize, %+v", err)
 	}
 }
 
-func TestSyncServices(t *testing.T){
+func TestSyncServices(t *testing.T) {
 	var cluster = New(
 		Config{
 			OpConfig: config.Config{
@@ -86,9 +92,12 @@ func TestSyncServices(t *testing.T){
 					SuperUsername:       superUserName,
 					ReplicationUsername: replicationUserName,
 				},
-
 			},
 		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "acid-fake-cluster",
+				Namespace: "test-namespace",
+			},
 		}, logger, eventRecorder)
 
 	cluster.Statefulset = &appsv1.StatefulSet{
@@ -105,7 +114,7 @@ func TestSyncServices(t *testing.T){
 
 	clusterMock := *cluster
 	err := clusterMock.syncServices()
-	if  err != nil {
+	if err != nil {
 		t.Errorf("Sync PreparedDBs test: Could not synchronize, %+v", err)
 	}
 }
@@ -119,7 +128,6 @@ func testSyncDatabases(t *testing.T) {
 					SuperUsername:       superUserName,
 					ReplicationUsername: replicationUserName,
 				},
-
 			},
 		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
 			Spec: acidv1.PostgresSpec{
@@ -139,7 +147,7 @@ func testSyncDatabases(t *testing.T) {
 						},
 						Extensions: map[string]string{
 							"pg_partman": "public",
-							"pgcrypto": "public",
+							"pgcrypto":   "public",
 						},
 					},
 				},
@@ -157,7 +165,7 @@ func testSyncDatabases(t *testing.T) {
 
 	clusterMock := *cluster
 	err := clusterMock.syncDatabases()
-	if  err != nil {
+	if err != nil {
 		t.Errorf("Sync PreparedDBs test: Could not synchronize, %+v", err)
 	}
 }
@@ -171,7 +179,6 @@ func testSyncPreparedDatabases(t *testing.T) {
 					SuperUsername:       superUserName,
 					ReplicationUsername: replicationUserName,
 				},
-
 			},
 		}, k8sutil.KubernetesClient{}, acidv1.Postgresql{
 			Spec: acidv1.PostgresSpec{
@@ -185,7 +192,7 @@ func testSyncPreparedDatabases(t *testing.T) {
 						},
 						Extensions: map[string]string{
 							"pg_partman": "public",
-							"pgcrypto": "public",
+							"pgcrypto":   "public",
 						},
 					},
 				},
@@ -203,7 +210,7 @@ func testSyncPreparedDatabases(t *testing.T) {
 
 	clusterMock := *cluster
 	err := clusterMock.syncPreparedDatabases()
-	if  err != nil {
+	if err != nil {
 		t.Errorf("Sync PreparedDBs test: Could not synchronize, %+v", err)
 	}
 }
