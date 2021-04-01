@@ -27,6 +27,16 @@ func TestSyncLogicalBackupJob(t *testing.T) {
 				Name:      "acid-fake-cluster",
 				Namespace: "test-namespace",
 			},
+			Spec: acidv1.PostgresSpec{
+				TeamID: "myapp", NumberOfInstances: 1,
+				Resources: acidv1.Resources{
+					ResourceRequests: acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+					ResourceLimits:   acidv1.ResourceDescription{CPU: "1", Memory: "10"},
+				},
+				Volume: acidv1.Volume{
+					Size: "1G",
+				},
+			},
 		}, logger, eventRecorder)
 
 	cluster.Statefulset = &appsv1.StatefulSet{
@@ -102,7 +112,7 @@ func TestSyncServices(t *testing.T) {
 	cluster.systemUsers = map[string]spec.PgUser{
 		"superuser": spec.PgUser{Origin: spec.RoleOriginInfrastructure},
 	}
-	
+
 	clusterMock := *cluster
 	err := clusterMock.syncServices()
 	if err != nil {

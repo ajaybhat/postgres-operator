@@ -3,6 +3,7 @@ package k8sutil
 import (
 	"context"
 	"fmt"
+	batchv1 "k8s.io/api/batch/v1"
 	"reflect"
 
 	b64 "encoding/base64"
@@ -463,6 +464,14 @@ func (mock *mockService) Create(context.Context, *v1.Service, metav1.CreateOptio
 		},
 	}, nil
 }
+func (mock *mockService) Update(ctx context.Context, service *v1.Service, opts metav1.UpdateOptions) (*v1.Service, error) {
+	return &v1.Service{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "test-service-updated",
+		},
+	}, nil
+}
+
 
 func (mock *mockService) Delete(ctx context.Context, name string, opts metav1.DeleteOptions) error {
 	return nil
@@ -513,6 +522,37 @@ func (mock *mockCronJob) Get(ctx context.Context, name string, opts metav1.GetOp
 	return &batchv1beta1.CronJob{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: "test-cronjob",
+		},Spec: batchv1beta1.CronJobSpec{
+			JobTemplate:                batchv1beta1.JobTemplateSpec{
+				Spec:       batchv1.JobSpec{
+					Parallelism:             nil,
+					Completions:             nil,
+					ActiveDeadlineSeconds:   nil,
+					BackoffLimit:            nil,
+					Selector:                nil,
+					ManualSelector:          nil,
+					Template:                v1.PodTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{},
+						Spec:       v1.PodSpec{
+							Volumes:                       nil,
+							InitContainers: nil,
+							Containers:     []v1.Container{
+								v1.Container{
+									Name: "global-sidecar",
+								},
+								// will be replaced by a cluster specific sidecar with the same name
+								v1.Container{
+									Name:  "replace-sidecar",
+									Image: "replaced-image",
+								},
+							},
+						},
+					},
+					TTLSecondsAfterFinished: nil,
+				},
+			},
+			SuccessfulJobsHistoryLimit: nil,
+			FailedJobsHistoryLimit:     nil,
 		},
 	}, nil
 }
